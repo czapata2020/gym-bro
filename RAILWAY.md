@@ -72,17 +72,19 @@ El contexto debe ser la raiz porque el build web usa `frontend/` y `api/coach/co
 En **Variables**, define:
 
 ```dotenv
+PORT=8080
 BACKEND=${{api.RAILWAY_PRIVATE_DOMAIN}}
 API_PORT=${{api.PORT}}
 ```
 
-No definas `NGINX_PORT`: el contenedor hace que nginx escuche en el `PORT` que Railway inyecta.
+No definas `NGINX_PORT`: el contenedor hace que nginx escuche en `PORT`. Se usa `8080` de forma
+explicita para que el health check y el dominio publico tengan un destino estable.
 El resolver DNS se obtiene de `/etc/resolv.conf`, por lo que nginx puede resolver y volver a
 resolver el dominio privado cuando se reemplaza una instancia de `api`. Si el servicio se renombra,
 la referencia de `BACKEND` se actualiza a traves de Railway.
 
-Genera un dominio publico solo para `web`. Railway termina TLS y la comunicacion `web` -> `api`
-usa HTTP dentro de la red privada.
+Genera un dominio publico solo para `web` y configura su **Target port** como `8080`, igual que
+`PORT`. Railway termina TLS y la comunicacion `web` -> `api` usa HTTP dentro de la red privada.
 
 ## 2. Persistencia
 
@@ -127,7 +129,7 @@ personalizados.
 | Variable | Servicio | Uso |
 | --- | --- | --- |
 | `PORT` | `api` | Puerto de escucha de Node; se fija en `3000` para la red privada. |
-| `PORT` | `web` | Inyectado por Railway; nginx escucha en este puerto. |
+| `PORT` | `web` | Puerto de escucha de nginx; se fija en `8080` y debe coincidir con el target del dominio. |
 | `BACKEND` | `web` | Dominio privado del servicio `api`. |
 | `API_PORT` | `web` | Puerto interno de `api`; referencia `${{api.PORT}}`. |
 | `RESOLVER` | `web` | Opcional; `auto` descubre el resolver del contenedor. |
@@ -137,8 +139,8 @@ personalizados.
 
 - `web` devuelve `502`: verifica `BACKEND`, `API_PORT`, que ambos servicios esten en el mismo
   environment y que `api` no este reiniciando por permisos o falta del volumen.
-- El health check de `web` consulta el puerto equivocado: elimina `NGINX_PORT`; Railway debe
-  inyectar `PORT` y el script de entrada lo traslada a nginx.
+- El dominio de `web` devuelve `502`: confirma que `PORT=8080` y que el **Target port** del dominio
+  tambien sea `8080`; elimina `NGINX_PORT` si esta definido.
 - Registro o login devuelve `403`: `ORIGIN` no coincide exactamente con la URL publica de `web`.
 - Las passkeys fallan: confirma HTTPS y que `RP_ID` sea el hostname de `ORIGIN`.
 - Los datos desaparecen tras redeploy: confirma que el volumen esta adjunto a `api` en `/data` y
