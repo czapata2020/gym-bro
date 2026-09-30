@@ -75,6 +75,8 @@ En **Variables**, define:
 PORT=8080
 BACKEND=${{api.RAILWAY_PRIVATE_DOMAIN}}
 API_PORT=${{api.PORT}}
+VITE_IMG_BASE=https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@7455efae41b330c265e7cd4b78dfa848e7ce5ebd/images/
+VITE_GIF_BASE=https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/
 ```
 
 No definas `NGINX_PORT`: el contenedor hace que nginx escuche en `PORT`. Se usa `8080` de forma
@@ -116,11 +118,12 @@ breve aunque exista health check.
 
 El servicio auxiliar `media` de `docker-compose.yml` descarga recursos de terceros a dos bind
 mounts compartidos con `web`. Los Railway Volumes pertenecen a un servicio y no equivalen a esos
-bind mounts compartidos. El despliegue base de dos servicios no ejecuta ese inicializador: la app,
-autenticacion, sincronizacion y uploads funcionan, pero las imagenes y GIF de ejercicios no estaran
-disponibles hasta definir una estrategia de media compatible con sus terminos de licencia.
+bind mounts compartidos. Para mantener la arquitectura de dos servicios, `VITE_IMG_BASE` y
+`VITE_GIF_BASE` hacen que el navegador cargue esos recursos desde el mismo CDN fijado a commit que
+usa la build movil. Son variables de build de Vite: cambiarlas requiere volver a construir `web`.
 
-No se deben incorporar esos archivos a la imagen ni al repositorio sin revisar `NOTICE.md`. Esta
+Los archivos no se incorporan a la imagen ni al repositorio. Su propiedad sigue sin estar resuelta
+y no estan cubiertos por la licencia de openGym; revisa `NOTICE.md` antes de reutilizarlos. Esta
 limitacion es independiente del volumen `/data`, que si contiene los uploads privados de ejercicios
 personalizados.
 
@@ -132,6 +135,8 @@ personalizados.
 | `PORT` | `web` | Puerto de escucha de nginx; se fija en `8080` y debe coincidir con el target del dominio. |
 | `BACKEND` | `web` | Dominio privado del servicio `api`. |
 | `API_PORT` | `web` | Puerto interno de `api`; referencia `${{api.PORT}}`. |
+| `VITE_IMG_BASE` | `web` | Base HTTPS, fijada a commit, para las imagenes de ejercicios. |
+| `VITE_GIF_BASE` | `web` | Base HTTPS, fijada a commit, para las animaciones de ejercicios. |
 | `RESOLVER` | `web` | Opcional; `auto` descubre el resolver del contenedor. |
 | `DATA_DIR` | `api` | Debe ser `/data`, igual que el mount path del volumen. |
 
