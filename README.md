@@ -200,6 +200,7 @@ All via `.env` (see `.env.example`):
 | `NGINX_PORT`  | Port the web container listens on, inside the container | `80`                 |
 | `BACKEND`     | Name of the API service that `/api` is proxied to — change it if yours isn't called `api` | `api` |
 | `PORT`        | Port the API listens on; the web container proxies to the same value | `3000`  |
+| `API_PORT`    | API upstream port used by the web image; Compose derives it from `PORT` | `3000` |
 | `RP_NAME`     | Name shown in the passkey prompt                     | `openGym`               |
 | `SESSION_DAYS`| How long a sign-in lasts, in days                    | `90`                    |
 | `ADMIN_UIDS`  | User ids that get the admin dashboard (comma-separated) | *(none)*             |

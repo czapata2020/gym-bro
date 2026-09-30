@@ -355,12 +355,11 @@ BASE_PATH=                 # subpath openGym is served under, e.g. /gym — see 
 SESSION_DAYS=90            # how long a sign-in lasts
 ```
 
-`RESOLVER` only matters off Docker. nginx re-resolves `BACKEND` on every `/api` request so a
+`RESOLVER` only matters when overriding runtime DNS. nginx re-resolves `BACKEND` on every `/api` request so a
 recreated API container does not leave it proxying to a dead IP, and `127.0.0.11` is where
-Docker answers those lookups. Nothing listens there on another runtime, and an unreachable
-resolver does not fail fast — every `/api` request hangs until it times out. On Kubernetes set
-it to the cluster DNS service address (`kubectl -n kube-system get svc kube-dns`, commonly
-`10.96.0.10`); under Podman, to whatever its network provides.
+Docker answers those lookups. The web image otherwise discovers the first nameserver in
+`/etc/resolv.conf`. On Kubernetes you can still set it explicitly to the cluster DNS service
+address (`kubectl -n kube-system get svc kube-dns`, commonly `10.96.0.10`).
 
 `SESSION_DAYS` is how long a browser sign-in and a phone pairing last, counted from when they
 were issued; lowering it never cuts an existing session short. A browser renews its session by
@@ -368,8 +367,9 @@ signing in; a paired phone renews its token by itself whenever it starts past ha
 time, so only a phone left unopened for longer than `SESSION_DAYS` has to be paired again.
 
 The web image renders its nginx config from these when the container starts, so they take effect
-on a **prebuilt image** — no rebuild. `BACKEND` and `PORT` together are what `/api` is proxied to,
-so they have to name a service the web container can actually reach on your compose network.
+on a **prebuilt image** — no rebuild. Compose passes its API `PORT` to the web image as
+`API_PORT`; `BACKEND` and `API_PORT` are the upstream nginx must be able to reach. Runtimes that
+assign `PORT` to the web listener, such as Railway, set `API_PORT` separately.
 
 Note the difference from `VITE_IMG_BASE` / `VITE_GIF_BASE` (see Troubleshooting): those are
 build-time values baked into the frontend bundle, and setting them next to `docker compose` does

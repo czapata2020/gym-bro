@@ -45,18 +45,19 @@ LABEL maintainer="Duarte Santos https://gitlab.com/DuarteSantos8" \
     org.opencontainers.image.created=$BUILD_DATE
 
 COPY web/nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY web/15-runtime-env.envsh /docker-entrypoint.d/15-runtime-env.envsh
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
 # exercise media (img/gif) is mounted at runtime from the media volume
 
-# Set Default ENVs for nginx
-ENV NGINX_PORT=80
+# PORT is the public listener. Railway injects it; plain Docker keeps port 80. NGINX_PORT remains
+# a backwards-compatible override for Compose and existing installations.
+ENV PORT=80
+ENV API_PORT=3000
 ENV BACKEND=api
-ENV PORT=3000
 # The DNS nginx asks about BACKEND on every /api request. Docker's embedded resolver by
-# default, which is correct for compose. Nothing listens on it elsewhere, and an unreachable
-# resolver makes every /api request hang rather than fail, so any other runtime has to say
-# what its DNS is: on Kubernetes, the kube-dns/CoreDNS service address (commonly 10.96.0.10).
-ENV RESOLVER=127.0.0.11
+# default, discovered from /etc/resolv.conf by 15-runtime-env.envsh. Compose can still pass
+# 127.0.0.11 explicitly, and Kubernetes can pass its CoreDNS service address.
+ENV RESOLVER=auto
 # Empty = the CF-Connecting-IP header is dropped before it reaches the API, so it cannot be
 # forged by a direct client. Set to $http_cf_connecting_ip only when Cloudflare is really in
 # front. Defined here too, not just in compose, so the template always renders for anyone
@@ -71,12 +72,11 @@ ENV BASE_PATH=""
 # is the one that refuses a file — raise both together.
 ENV MEDIA_UPLOAD_MAX=48m
 
-# Probe the port nginx was actually told to listen on (NGINX_PORT is configurable, so a
-# hardcoded http://localhost/ breaks on any instance that changed it), and address it as
+# Probe the port nginx was actually told to listen on (NGINX_PORT is configurable and otherwise
+# follows PORT), and address it as
 # 127.0.0.1: envsubst rewrites the conf after the image's IPv6 script, so nginx ends up
 # listening on IPv4 only while "localhost" resolves to ::1 first.
 HEALTHCHECK --interval=5m \
             --timeout=5s \
             --retries=3 \
-            CMD wget --spider -q "http://127.0.0.1:${NGINX_PORT}/" || exit 1
-
+            CMD wget --spider -q "http://127.0.0.1:${NGINX_PORT:-${PORT:-80}}/" || exit 1
