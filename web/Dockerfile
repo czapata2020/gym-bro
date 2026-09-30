@@ -24,7 +24,14 @@ COPY frontend/ ./
 # image built between two releases calls itself the same thing, and "which build are you running?"
 # cannot be answered from the phone. Unset, the app reports package.json's version as before.
 ARG APP_BUILD=""
-RUN APP_BUILD="$APP_BUILD" npm run build
+# Railway can supply the same pinned CDN bases used by the mobile build. They stay empty for the
+# default self-hosted image, where Compose mounts the downloaded media at /img and /gif.
+ARG VITE_IMG_BASE=""
+ARG VITE_GIF_BASE=""
+RUN APP_BUILD="$APP_BUILD" \
+    VITE_IMG_BASE="$VITE_IMG_BASE" \
+    VITE_GIF_BASE="$VITE_GIF_BASE" \
+    npm run build
 
 FROM nginx:alpine
 # Same reason as in api/Dockerfile: alpine fixes land faster than the nginx image is rebuilt.
