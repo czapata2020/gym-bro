@@ -120,18 +120,18 @@ function ChallengeList() {
     </> : <form className="challenge-form" onSubmit={submit}>
       <div className="challenge-mode"><button type="button" className={mode === 'create' ? 'on' : ''} onClick={() => setMode('create')}>{ct('Create')}</button><button type="button" className={mode === 'join' ? 'on' : ''} onClick={() => setMode('join')}>{ct('Join')}</button></div>
       {mode === 'create' && <>
-        <label className="field"><span>{ct('Challenge name')}</span><input required maxLength="60" value={form.name} onChange={e => set('name', e.target.value)} placeholder={ct('Wedding 2026')} /></label>
+        <label className="challenge-field"><span>{ct('Challenge name')}</span><input required maxLength="60" value={form.name} onChange={e => set('name', e.target.value)} placeholder={ct('Wedding 2026')} /></label>
         <div className="challenge-form-grid">
-          <label className="field"><span>{ct('Starts')}</span><input type="date" required value={form.startDate} onChange={e => set('startDate', e.target.value)} /></label>
-          <label className="field"><span>{ct('Ends')}</span><input type="date" required value={form.endDate} onChange={e => set('endDate', e.target.value)} /></label>
+          <label className="challenge-field"><span>{ct('Starts')}</span><input type="date" required value={form.startDate} onChange={e => set('startDate', e.target.value)} /></label>
+          <label className="challenge-field"><span>{ct('Ends')}</span><input type="date" required value={form.endDate} onChange={e => set('endDate', e.target.value)} /></label>
         </div>
-        <label className="field"><span>{ct('Workouts per week')}</span><input type="number" min="1" max="14" required value={form.workoutsPerWeek} onChange={e => set('workoutsPerWeek', e.target.value)} /></label>
-        <label className="field"><span>{ct('The stake')}</span><textarea maxLength="160" value={form.stake} onChange={e => set('stake', e.target.value)} placeholder={ct('The loser cooks dinner for a week')} /></label>
+        <label className="challenge-field"><span>{ct('Workouts per week')}</span><input type="number" min="1" max="14" required value={form.workoutsPerWeek} onChange={e => set('workoutsPerWeek', e.target.value)} /></label>
+        <label className="challenge-field"><span>{ct('The stake')}</span><textarea maxLength="160" value={form.stake} onChange={e => set('stake', e.target.value)} placeholder={ct('The loser cooks dinner for a week')} /></label>
       </>}
-      {mode === 'join' && <label className="field"><span>{ct('Invitation code')}</span><input required maxLength="20" autoCapitalize="characters" value={form.code} onChange={e => set('code', e.target.value.toUpperCase())} placeholder="A1B2C3D4" /></label>}
+      {mode === 'join' && <label className="challenge-field"><span>{ct('Invitation code')}</span><input required maxLength="20" autoCapitalize="characters" value={form.code} onChange={e => set('code', e.target.value.toUpperCase())} placeholder="A1B2C3D4" /></label>}
       <div className="challenge-form-grid">
-        <label className="field"><span>{ct('Starting weight')} ({S.unit})</span><input type="number" min="25" max="400" step="0.1" required value={form.startWeight} onChange={e => set('startWeight', e.target.value)} /></label>
-        <label className="field"><span>{ct('Target weight')} ({S.unit})</span><input type="number" min="25" max="400" step="0.1" required value={form.targetWeight} onChange={e => set('targetWeight', e.target.value)} /></label>
+        <label className="challenge-field"><span>{ct('Starting weight')} ({S.unit})</span><input type="number" min="25" max="400" step="0.1" required value={form.startWeight} onChange={e => set('startWeight', e.target.value)} /></label>
+        <label className="challenge-field"><span>{ct('Target weight')} ({S.unit})</span><input type="number" min="25" max="400" step="0.1" required value={form.targetWeight} onChange={e => set('targetWeight', e.target.value)} /></label>
       </div>
       <p className="challenge-note"><Icon name="info" />{ct('Your exact weight stays private. Your rival only sees progress percentages.')}</p>
       {error && <div className="challenge-error">{error}</div>}

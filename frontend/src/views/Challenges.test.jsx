@@ -80,3 +80,25 @@ describe('Challenges versus view', () => {
     expect(host.textContent).toContain('Share the code to start the duel.')
   })
 })
+
+describe('Challenges setup form', () => {
+  it('uses aligned, theme-aware controls instead of the global field wrapper', async () => {
+    mocks.api.mockResolvedValue({ challenges: [] })
+    host = document.createElement('div')
+    document.body.appendChild(host)
+    root = createRoot(host)
+    await act(async () => {
+      root.render(<MemoryRouter initialEntries={['/challenges']}><Routes><Route path="/challenges" element={<Challenges />} /></Routes></MemoryRouter>)
+    })
+    await act(async () => {
+      Array.from(host.querySelectorAll('button')).find(button => button.textContent === 'Create challenge').click()
+    })
+
+    const fields = host.querySelectorAll('.challenge-field')
+    expect(fields.length).toBeGreaterThanOrEqual(7)
+    expect(host.querySelector('.challenge-form .field')).toBeNull()
+    expect(host.querySelectorAll('.challenge-form-grid .challenge-field')).toHaveLength(4)
+    expect(host.querySelector('input[type="date"]')).not.toBeNull()
+    expect(host.querySelector('input[type="number"]')?.value).not.toBe('')
+  })
+})
