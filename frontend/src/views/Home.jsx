@@ -10,6 +10,7 @@ import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { glyphOf } from '../lib/glyphs.js'
+import { ct } from '../lib/challenge-copy.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
@@ -129,6 +130,20 @@ export default function Home() {
         </div>
       </div>
     )}
+
+    {user && <div className="card tappable challenge-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/challenges'))}>
+      <div className="row between">
+        <div className="row" style={{ gap: 9 }}>
+          <span className="lrow-i"><Icon name="trophy" /></span>
+          <div>
+            <div className="lbl2">{ct('Gym Bro')}</div>
+            <div className="ttl">{ct('Challenges')}</div>
+            <div className="ss">{ct('Consistency wins. Weight confirms the result.')}</div>
+          </div>
+        </div>
+        <Icon name="chevronRight" className="chev" />
+      </div>
+    </div>}
 
     {!S.routines.length && !S.active && (
       <div className="card">

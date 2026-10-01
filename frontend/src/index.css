@@ -1700,6 +1700,98 @@ body.chips-dragging *{cursor:inherit}
 .coach-cta-t span{font-size:13px;color:var(--label-2);line-height:1.35}
 .coach-cta-chev{color:var(--acc);font-size:15px;flex:none}
 
+/* ------------------------------------------------ shared challenges -- */
+.challenge-page{padding-bottom:30px}
+.challenge-head{justify-content:flex-start;gap:12px}
+.challenge-head>div:last-child{min-width:0}
+.challenge-head h1{overflow-wrap:anywhere}
+.challenge-home{border:1px solid color-mix(in srgb,var(--yellow) 24%,transparent)}
+.challenge-home .lrow-i{background:color-mix(in srgb,var(--yellow) 20%,var(--surface));color:var(--yellow)}
+.challenge-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.challenge-list{display:flex;flex-direction:column;gap:8px}
+.challenge-list-item{
+  width:100%;min-height:72px;padding:12px 14px;display:flex;align-items:center;gap:11px;text-align:start;
+  background:var(--surface);border-radius:var(--r-card);transition:background var(--fast),transform var(--fast)
+}
+.challenge-list-item:active{background:var(--surface-2);transform:scale(.99)}
+.challenge-list-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--yellow) 17%,var(--surface-2));color:var(--yellow);font-size:21px}
+.challenge-list-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+.challenge-list-copy b{font-size:16px;overflow-wrap:anywhere}
+.challenge-list-copy small{color:var(--label-2)}
+.challenge-list-score{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums}
+.challenge-list-score small{font-size:11px;color:var(--label-3);font-weight:500}
+.challenge-empty{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;color:var(--label-2)}
+.challenge-empty>.icn{font-size:44px;color:var(--yellow);margin-bottom:12px}
+.challenge-empty h2{color:var(--label);font-size:21px;margin:0 0 7px}
+.challenge-empty p{max-width:380px;margin:0;font-size:14px;line-height:1.5}
+.challenge-form{display:flex;flex-direction:column;gap:12px}
+.challenge-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.challenge-form textarea{min-height:78px;resize:vertical}
+.challenge-mode{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);padding:3px;border-radius:var(--r-card);margin-bottom:4px}
+.challenge-mode button{min-height:36px;border-radius:6px;color:var(--label-2);font-weight:600}
+.challenge-mode button.on{background:var(--surface-3);color:var(--label)}
+.challenge-note,.challenge-privacy{display:flex;gap:7px;align-items:flex-start;color:var(--label-2);font-size:12px;line-height:1.4;margin:0}
+.challenge-note .icn,.challenge-privacy .icn{flex:none;margin-top:1px}
+.challenge-error{padding:11px 13px;border-radius:var(--r-card);background:color-mix(in srgb,var(--red) 13%,var(--surface));color:var(--red);font-size:13px;margin:8px 0}
+.challenge-loading{min-height:70vh;display:grid;place-items:center;font-size:42px;color:var(--label-3)}
+.challenge-versus{display:grid;grid-template-columns:minmax(0,1fr) 58px minmax(0,1fr);align-items:center;padding:18px 2px 22px}
+.challenge-competitor{display:flex;flex-direction:column;align-items:center;min-width:0;text-align:center;transition:filter .3s,opacity .3s}
+.challenge-competitor.losing{filter:grayscale(1);opacity:.48}
+.challenge-competitor.waiting{filter:none;opacity:.5}
+.challenge-competitor>b{width:100%;margin-top:9px;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.challenge-competitor>strong{font-size:27px;line-height:1.15;font-variant-numeric:tabular-nums}
+.challenge-competitor>strong small{font-size:11px;color:var(--label-3)}
+.challenge-competitor>span{font-size:11px;color:var(--label-2)}
+.challenge-avatar{position:relative;width:clamp(92px,28vw,140px);aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--surface-2);border:3px solid var(--surface-3);padding:0;flex:none}
+.challenge-competitor.leading .challenge-avatar{border-color:var(--yellow);box-shadow:0 0 0 4px color-mix(in srgb,var(--yellow) 15%,transparent)}
+.challenge-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.challenge-avatar-fallback{width:100%;height:100%;display:grid;place-items:center;color:var(--label-3);font-size:46px}
+.challenge-avatar-fallback span{font-size:30px;font-weight:700;color:var(--label-2)}
+.challenge-camera{position:absolute;right:5px;bottom:5px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--label);color:var(--bg);font-size:15px}
+.challenge-vs{display:flex;flex-direction:column;align-items:center;gap:5px}
+.challenge-vs span{font-size:19px;font-weight:800;color:var(--red)}
+.challenge-vs small{font-size:10px;text-align:center;color:var(--label-3);line-height:1.2}
+.challenge-file{display:none}
+.challenge-uploading{text-align:center;font-size:12px;color:var(--label-2);margin-top:-14px;margin-bottom:10px}
+.challenge-verdict{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:9px 12px;margin-bottom:12px;background:color-mix(in srgb,var(--yellow) 12%,var(--surface));color:var(--yellow);border-radius:var(--r-card);font-weight:600;font-size:14px;text-align:center}
+.challenge-invite{display:flex;flex-direction:column;align-items:center;padding:16px;margin-bottom:12px;border:1px dashed var(--surface-3);border-radius:var(--r-card)}
+.challenge-invite>span,.challenge-invite>small{color:var(--label-2);font-size:12px}
+.challenge-invite button{display:flex;align-items:center;gap:8px;font-size:27px;font-weight:700;letter-spacing:.08em;padding:5px;color:var(--label)}
+.challenge-invite button .icn{font-size:17px;color:var(--label-3)}
+.challenge-scoreboard{padding:16px;background:var(--surface);border-radius:var(--r-card);margin-bottom:10px}
+.challenge-section-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:14px}
+.challenge-section-title h2{font-size:18px;margin:0}
+.challenge-section-title span{font-size:11px;color:var(--label-3);text-align:end}
+.challenge-metric{margin-bottom:13px}
+.challenge-metric>div:first-child{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.challenge-metric b{font-variant-numeric:tabular-nums}
+.challenge-track{height:8px;background:var(--surface-3);border-radius:4px;overflow:hidden}
+.challenge-track i{display:block;height:100%;border-radius:4px;transition:width .35s}
+.challenge-week{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 12px}
+.challenge-week>div{display:flex;gap:8px;align-items:center;min-height:58px;padding:9px;background:var(--surface-2);border-radius:var(--r-card)}
+.challenge-week .icn{font-size:20px;flex:none;color:var(--blue)}
+.challenge-week .due .icn{color:var(--orange)}
+.challenge-week .done .icn{color:var(--green)}
+.challenge-week span{display:flex;flex-direction:column;font-size:10px;color:var(--label-2);line-height:1.25}
+.challenge-week b{font-size:14px;color:var(--label)}
+.challenge-details{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sep);border-radius:var(--r-card);overflow:hidden;margin-bottom:10px}
+.challenge-details>div{min-width:0;padding:12px 8px;background:var(--surface);text-align:center;display:flex;flex-direction:column;gap:3px}
+.challenge-details span{font-size:10px;color:var(--label-3)}
+.challenge-details b{font-size:12px;overflow-wrap:anywhere}
+.challenge-stake{display:flex;align-items:center;gap:11px;padding:14px;background:color-mix(in srgb,var(--red) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--red) 22%,transparent);border-radius:var(--r-card);margin-bottom:12px}
+.challenge-stake>.icn{font-size:25px;color:var(--red);flex:none}
+.challenge-stake div{display:flex;flex-direction:column;gap:2px}
+.challenge-stake span{font-size:10px;color:var(--label-2);text-transform:uppercase}
+.challenge-stake b{font-size:14px;overflow-wrap:anywhere}
+
+@media(max-width:430px){
+  .challenge-actions{grid-template-columns:1fr}
+  .challenge-form-grid{grid-template-columns:1fr}
+  .challenge-avatar{width:88px}
+  .challenge-details{grid-template-columns:1fr 1fr}
+  .challenge-details>div:last-child{grid-column:1/-1}
+}
+
 /* ----------------------------------------------------------- RTL (Arabic) -- */
 /* Directional icons flip: back chevrons point right, trailing chevrons point left. */
 [dir="rtl"] [data-icon="chevronLeft"],
