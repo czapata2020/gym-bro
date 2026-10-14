@@ -11,7 +11,7 @@ import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, dateLocale, instrFor, exerciseNameFor, exerciseNameClass, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
-import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
+import { buildStarterPlan, installStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import CustomMediaField from './components/CustomMediaField.jsx'
 import WorkoutMediaSection, { workoutMediaCount } from './components/WorkoutMedia.jsx'
@@ -132,7 +132,11 @@ const PLAN_COPY = {
   ppl: () => ({ name: t('Push / Pull / Legs'), about: t('Push, pull and legs each get their own day.') }),
   'upper-lower': () => ({ name: t('Upper / Lower'), about: t('Upper body twice, lower body twice.') }),
   'full-body': () => ({ name: t('Full Body'), about: t('Three sessions, the whole body each time.') }),
-  '5x5': () => ({ name: t('5×5'), about: t('Five sets of five on the main barbell lifts.') })
+  '5x5': () => ({ name: t('5×5'), about: t('Five sets of five on the main barbell lifts.') }),
+  'gym-bro-phase-1': () => ({
+    name: 'Gym Bro — Fuerza y Recomposición — Fase 1',
+    about: 'Principiante · 45–60 min · RIR 2–3'
+  })
 }
 
 // Adds the plan's routines and puts them on its weekdays. Existing routines are never touched
@@ -142,10 +146,7 @@ const PLAN_COPY = {
 export function loadStarterPlan(planId) {
   const plan = buildStarterPlan(planId)
   if (!plan) return false
-  update(st => {
-    st.routines.push(...plan.routines)
-    plan.schedule.forEach(({ day, routineId }) => { st.week[day] = [routineId] })
-  })
+  update(st => { installStarterPlan(st, plan) })
   toast(t('{0} loaded', PLAN_COPY[planId]().name))
   return true
 }

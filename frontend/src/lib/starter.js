@@ -32,17 +32,99 @@ const FIVE_BY_FIVE = [
   ['5x5-c', '5×5 C', 'barbell', [['0739', 5, 5], ['0047', 5, 5], ['1323', 5, 5]]]
 ]
 
+const PHASE_MAIN_NOTE = 'RIR 2-3. Semanas 1-2: 2 series. Semanas 3-4: cambia a 3 series si recuperas bien. Semanas 5-8: al completar el máximo con buena técnica, aumenta el peso mínimo disponible.'
+const PHASE_ACCESSORY_NOTE = 'RIR 2-3. Mantén el movimiento controlado. Aumenta el peso solo después de completar el máximo de repeticiones en ambas series con buena técnica.'
+const PHASE_WARMUP_NOTE = 'Antes de entrenar: 5-8 min de movilidad y aproximación gradual. ' + PHASE_MAIN_NOTE
+const PHASE_ANKLE_NOTE = 'Sin dolor, molestia ni inestabilidad en el tobillo. Usa el banco como referencia y detén la serie si aparece cualquier síntoma.'
+
+const phaseReps = (id, min, max, restSec, note = PHASE_ACCESSORY_NOTE, extra = {}) => ({
+  id, sets: 2, mode: 'reps', reps: max, repsMin: min, weight: 0,
+  prog: 'double', restSec, note, ...extra
+})
+const phaseHold = (id, sec, restSec, note) => ({
+  id, sets: 2, mode: 'time', sec, weight: 0, bodyweight: true,
+  prog: 'off', restSec, note
+})
+
+// This plan is deliberately conservative: no starting load is guessed, impact and pivots are
+// absent, and the three custom movements fill genuine catalogue gaps. Per-side exercises store
+// total reps, so 20-24 reads and logs as 10-12 on each side in the workout screen.
+const GYM_BRO_PHASE_1 = [
+  ['phase1-upper-a', 'Fase 1 · Tren superior A', 'barbell', [
+    phaseReps('0289', 10, 12, 120, PHASE_WARMUP_NOTE, { warmupSets: 1 }),
+    phaseReps('0292', 20, 24, 120, PHASE_MAIN_NOTE, { side: true }),
+    phaseReps('0405', 8, 12, 120, PHASE_MAIN_NOTE),
+    phaseReps('0334', 12, 15, 60),
+    phaseReps('0294', 10, 12, 60),
+    phaseReps('0351', 10, 12, 60),
+  ], { prog: 'double' }],
+  ['phase1-lower-a', 'Fase 1 · Tren inferior A', 'legs', [
+    { id: '0291', sets: 2, mode: 'reps', reps: 10, weight: 0, prog: 'off', restSec: 120, note: PHASE_WARMUP_NOTE + ' ' + PHASE_ANKLE_NOTE },
+    phaseReps('3013', 12, 15, 90),
+    { id: '1459', sets: 2, mode: 'reps', reps: 10, weight: 0, prog: 'linear', restSec: 120, note: PHASE_MAIN_NOTE },
+    phaseHold('gb-phase1-wall-sit', 15, 60, PHASE_ANKLE_NOTE + ' Aumenta 5 segundos por semana hasta 25 segundos.'),
+    { id: '0276', sets: 2, mode: 'reps', reps: 20, weight: 0, bodyweight: true, side: true, prog: 'off', restSec: 60, note: '10 repeticiones por lado, lentas y controladas.' },
+    phaseHold('gb-phase1-front-plank', 20, 60, 'Mantén costillas y pelvis alineadas. Aumenta 5 segundos cuando completes ambas series, hasta 30 segundos.'),
+  ], { prog: 'double' }],
+  ['phase1-upper-b', 'Fase 1 · Tren superior B', 'barbell', [
+    phaseReps('0314', 10, 12, 120, PHASE_WARMUP_NOTE, { warmupSets: 1 }),
+    phaseReps('0327', 10, 12, 120, PHASE_MAIN_NOTE),
+    phaseReps('0493', 8, 12, 90, PHASE_ACCESSORY_NOTE, { bodyweight: true }),
+    phaseReps('0383', 12, 15, 60),
+    phaseReps('0313', 10, 12, 60),
+    phaseReps('0351', 10, 12, 60),
+  ], { prog: 'double' }],
+  ['phase1-lower-b', 'Fase 1 · Tren inferior B', 'legs', [
+    phaseReps('1459', 10, 12, 120, PHASE_WARMUP_NOTE, { warmupSets: 1 }),
+    phaseReps('0291', 10, 12, 120, PHASE_MAIN_NOTE + ' ' + PHASE_ANKLE_NOTE),
+    phaseReps('gb-phase1-bench-hip-thrust', 10, 12, 120, PHASE_MAIN_NOTE),
+    phaseHold('gb-phase1-wall-sit', 20, 60, PHASE_ANKLE_NOTE + ' Mantén 20 segundos con técnica estable.'),
+    phaseReps('0274', 12, 15, 60),
+    { id: '0276', sets: 2, mode: 'reps', reps: 20, weight: 0, bodyweight: true, side: true, prog: 'off', restSec: 60, note: '10 repeticiones por lado, lentas y controladas.' },
+  ], { prog: 'double' }],
+]
+
+const GYM_BRO_PHASE_1_CUSTOM = [
+  {
+    id: 'gb-phase1-wall-sit', n: 'Sentadilla isométrica en pared', bp: 'upper legs', eq: 'body weight',
+    tg: 'quadriceps', primaries: ['quadriceps'], secondaries: ['gluteal'], muscleGroups: ['quadriceps', 'gluteal'],
+    desc: 'Apoya la espalda en la pared y mantén una profundidad cómoda, sin dolor ni inestabilidad en el tobillo.'
+  },
+  {
+    id: 'gb-phase1-front-plank', n: 'Plancha frontal', bp: 'waist', eq: 'body weight',
+    tg: 'abs', primaries: ['abs'], secondaries: ['lower-back'], muscleGroups: ['abs', 'lower-back'],
+    desc: 'Mantén el cuerpo alineado sobre antebrazos y pies, con abdomen y glúteos activos.'
+  },
+  {
+    id: 'gb-phase1-bench-hip-thrust', n: 'Hip thrust apoyado en banco', bp: 'upper legs', eq: 'barbell',
+    tg: 'gluteal', primaries: ['gluteal'], secondaries: ['hamstring'], muscleGroups: ['gluteal', 'hamstring'],
+    desc: 'Apoya la parte alta de la espalda en el banco y extiende la cadera. Empieza sin carga y añade peso solo con técnica estable.'
+  },
+]
+
 // [weekday, routineKey] — weekday is a DAYN index, so 1 is Monday. Fixed weeks only: every
 // plan repeats the same seven days, which is all the weekly plan model can represent.
 const PLANS = {
   ppl: { routines: PPL, schedule: [[1, 'push'], [3, 'pull'], [5, 'legs']] },
   'upper-lower': { routines: UPPER_LOWER, schedule: [[1, 'upper-a'], [2, 'lower-a'], [4, 'upper-b'], [5, 'lower-b']] },
   'full-body': { routines: FULL_BODY, schedule: [[1, 'fb-a'], [3, 'fb-b'], [5, 'fb-c']] },
-  '5x5': { routines: FIVE_BY_FIVE, schedule: [[1, '5x5-a'], [3, '5x5-b'], [5, '5x5-c']] }
+  '5x5': { routines: FIVE_BY_FIVE, schedule: [[1, '5x5-a'], [3, '5x5-b'], [5, '5x5-c']] },
+  'gym-bro-phase-1': {
+    routines: GYM_BRO_PHASE_1,
+    customEx: GYM_BRO_PHASE_1_CUSTOM,
+    effort: 'rir',
+    schedule: [[1, 'phase1-upper-a'], [2, 'phase1-lower-a'], [4, 'phase1-upper-b'], [5, 'phase1-lower-b']]
+  }
 }
 
 const build = routines =>
-  routines.map(([, name, emoji, list]) => ({ id: uid(), name, emoji, ex: list.map(([id, sets, reps]) => ({ id, sets, reps, weight: 0 })) }))
+  routines.map(([, name, emoji, list, settings]) => ({
+    id: uid(), name, emoji,
+    ex: list.map(entry => Array.isArray(entry)
+      ? { id: entry[0], sets: entry[1], reps: entry[2], weight: 0 }
+      : { ...entry }),
+    ...(settings || {})
+  }))
 
 // Fresh routine objects (new ids) — [push, pull, legs]. The demo build seeds a history on
 // top of exactly these three, so this entry point keeps its shape.
@@ -64,5 +146,36 @@ export const buildStarterPlan = id => {
   const routines = build(plan.routines)
   // key → the id just minted for it, so the schedule below names its routine
   const byKey = Object.fromEntries(plan.routines.map(([key], i) => [key, routines[i].id]))
-  return { routines, schedule: plan.schedule.map(([day, key]) => ({ day, routineId: byKey[key] })) }
+  return {
+    routines,
+    schedule: plan.schedule.map(([day, key]) => ({ day, routineId: byKey[key] })),
+    customEx: (plan.customEx || []).map(ex => ({ ...ex })),
+    ...(plan.effort ? { effort: plan.effort } : {})
+  }
+}
+
+// Add a built plan to an existing profile without replacing routines or history. Custom
+// exercises are matched by name + body part before minting an id, so loading the plan twice or
+// having made the same movement already never creates duplicate catalogue entries.
+export function installStarterPlan(state, plan) {
+  if (!plan) return false
+  state.routines = state.routines || []
+  state.customEx = state.customEx || []
+  state.week = state.week || {}
+  const exIdMap = {}
+  ;(plan.customEx || []).forEach(ex => {
+    const same = state.customEx.find(cur =>
+      (cur.n || '').trim().toLowerCase() === (ex.n || '').trim().toLowerCase() && cur.bp === ex.bp)
+    if (same) { exIdMap[ex.id] = same.id; return }
+    const id = uid()
+    exIdMap[ex.id] = id
+    state.customEx.push({ ...ex, id, sm: [...(ex.secondaries || [])], custom: true })
+  })
+  state.routines.push(...plan.routines.map(routine => ({
+    ...routine,
+    ex: routine.ex.map(ex => ({ ...ex, id: exIdMap[ex.id] || ex.id }))
+  })))
+  plan.schedule.forEach(({ day, routineId }) => { state.week[day] = [routineId] })
+  if (plan.effort) state.effort = plan.effort
+  return true
 }
