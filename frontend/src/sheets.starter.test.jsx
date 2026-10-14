@@ -39,7 +39,7 @@ beforeEach(() => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   useUI.setState({ sheets: [], toastMsg: '' })
   useStore.setState(s => ({
-    S: { ...s.S, routines: [{ id: 'mine', name: 'My routine', emoji: 'star', ex: [] }], week: {}, active: null },
+    S: { ...s.S, routines: [{ id: 'mine', name: 'My routine', emoji: 'star', ex: [] }], customEx: [], workouts: [], week: {}, active: null, effort: null },
   }))
   document.body.innerHTML = ''
 })
@@ -53,8 +53,9 @@ describe('starter plan chooser', () => {
     starterPlanSheet()
     const host = renderTop()
     expect([...host.querySelectorAll('.item .tt')].map(el => el.textContent))
-      .toEqual(['Push / Pull / Legs', 'Upper / Lower', 'Full Body', '5×5'])
+      .toEqual(['Push / Pull / Legs', 'Upper / Lower', 'Full Body', '5×5', 'Gym Bro — Fuerza y Recomposición — Fase 1'])
     expect(rowFor(host, 'Upper / Lower').querySelector('.ss').textContent).toContain('4 days per week')
+    expect(rowFor(host, 'Gym Bro — Fuerza y Recomposición — Fase 1').querySelector('.ss').textContent).toContain('4 days per week')
   })
 
   it('loads straight away when the plan’s weekdays are free, without asking', () => {
@@ -116,6 +117,19 @@ describe('loadStarterPlan', () => {
     expect(S().routines).toHaveLength(7)
     expect(new Set([...first, ...second]).size).toBe(6)
     expect(second.some(id => first.includes(id))).toBe(false)
+  })
+
+  it('loads the Gym Bro phase with its schedule, custom exercises and RIR tracking', () => {
+    loadStarterPlan('gym-bro-phase-1')
+    expect(nameOn(1)).toBe('Fase 1 · Tren superior A')
+    expect(nameOn(2)).toBe('Fase 1 · Tren inferior A')
+    expect(nameOn(4)).toBe('Fase 1 · Tren superior B')
+    expect(nameOn(5)).toBe('Fase 1 · Tren inferior B')
+    expect(S().customEx.map(ex => ex.n)).toEqual([
+      'Sentadilla isométrica en pared', 'Plancha frontal', 'Hip thrust apoyado en banco'
+    ])
+    expect(S().effort).toBe('rir')
+    expect(S().workouts).toEqual([])
   })
 
   it('refuses a plan it does not know and changes nothing', () => {
